@@ -28,7 +28,7 @@ def multiply(left, right):
     ad_plus_bc = multiply(a + b, c + d) - ac - bd
 
     # (10^length)*ac + (10^(length/2))*(ad + bc) + bd
-    #  use 2 * half_length instead of length takes care of both even and odd numbers
+    # use 2 * half_length takes care of both even and odd numbers
     prod = 10**(2 * half_length) * ac + (ad_plus_bc * 10 ** half_length) + bd
 
     return prod
@@ -43,3 +43,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
