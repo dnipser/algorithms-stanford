@@ -18,8 +18,11 @@ def calculate_inversions(left_tuple, right_tuple):
             sorted_array.append(right_array[ri])
             ri += 1
 
-            # increment number of inversions by number of elements
-            # remaining in left sub array
+            # increment number of inversions by number of elements remaining
+            # in left sub array. That goes from the fact that su arrays are
+            # sorted, so all elements remaining of left sub array are bigger
+            # than element copied from the right sub array and they will be
+            # swapped by next iterations
             inversions += len(left_array) - li
 
     # copy remaining parts which might left
