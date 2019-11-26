@@ -1,5 +1,6 @@
 
 import time
+from misc.file_utils import read_input_dataset
 
 
 def calculate_inversions(left_tuple, right_tuple):
@@ -52,17 +53,6 @@ def sort_with_inversions(input_tuple):
 
     sorted_tuple = calculate_inversions(left_tuple, right_tuple)
     return sorted_tuple
-
-
-def read_input_dataset(dir, file_name):
-    input_dataset = []
-
-    path = '{}{}'.format(dir, file_name)
-    with open(path) as f:
-        for line in f:
-            input_dataset.append(int(line))
-
-    return input_dataset
 
 
 if __name__ == '__main__':
