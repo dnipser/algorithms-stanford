@@ -52,6 +52,37 @@ def selection_sort(array):
     return array
 
 
+def counting_sort(array):
+    max_val = array[0]
+    for val in array:
+        max_val = val if val > max_val else max_val
+
+    # create count array and calculate number of occurences(histogram)
+    # of each value in input array
+    count = [0] * (max_val + 1)
+    for val in array:
+        count[val] += 1
+
+    # modify count list such that each value is combined with sum
+    # of previous counts. In this case each value indicates initial
+    # position of value sequence in sorted array.
+    for i in range(max_val):
+        count[i + 1] += count[i]
+
+    output = [0] * (len(array))
+
+    i = len(output) - 1
+    while i >= 0:
+        count_index = array[i]
+        # take positio and decrease by to convert from count to index
+        output[count[count_index] - 1] = array[i]
+        # decrease count number after number was restored
+        count[count_index] -= 1
+        i -= 1
+
+    return output
+
+
 def merge_sort(array):
     """
     https://www.geeksforgeeks.org/merge-sort/
@@ -107,13 +138,13 @@ def quick_sort(array, lo=0, hi=-1):
 
     if lo < hi:
         partition_idx = __qs_partition_middle(array, lo, hi)
-        quick_sort(array, lo, partition_idx - 1)
+        quick_sort(array, lo, partition_idx)
         quick_sort(array, partition_idx + 1, hi)
     return array
 
 
 def __qs_partition_middle(array, lo, hi):
-    # select medium array element as a pivot, then iterate from
+    # select first array element as a pivot, then iterate from
     # beginning and end of array towards to middle and swap elements
     # so smaller are right to pivot and bigger are right to pivot
     pivot_idx = lo + (hi - lo) // 2
@@ -131,8 +162,10 @@ def __qs_partition_middle(array, lo, hi):
             break
 
         __swap(array, i, j)
+        i += 1
+        j -= 1
 
-    return i
+    return j
 
 
 def __swap(array, i, j):
@@ -148,17 +181,32 @@ def __copy(input):
     return res
 
 
+def __is_sorted(array):
+    sorted = True
+    i = 0
+    for j in range(1, len(array)):
+        if array[i] > array[j]:
+            sorted = False
+            break
+        i += 1
+    return sorted
+
+
 def main():
-    given_arr = [1, 3, 0, 12, 11, 9, 14, 10, 15, 4, 13, 8, 5, 6, 2, 7]
+    given_arr = [
+        1, 3, 4, 0, 12, 11, 9, 14, 1, 10, 3,
+        15, 4, 13, 8, 5, 6, 10, 2, 7, 1, 1]
+
     print("Given array: ", given_arr)
     sorts = [
         "bubble_sort", "insertion_sort", "selection_sort",
-        "merge_sort", "quick_sort"]
+        "merge_sort", "quick_sort", "counting_sort"]
 
     for sort in sorts:
         print("Sorting array with: ", sort)
-        sorted_arr = locals()[sort](__copy(given_arr))
+        sorted_arr = globals()[sort](__copy(given_arr))
         print("Sorted array: ", sorted_arr)
+        assert __is_sorted(sorted_arr) is True
 
 
 if __name__ == '__main__':
