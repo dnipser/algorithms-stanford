@@ -2,6 +2,7 @@
 
 from enum import Enum
 from misc.file_utils import read_input_dataset
+from misc.sort_utils import copy, swap, is_sorted
 
 
 class PivotType(Enum):
@@ -36,7 +37,7 @@ def __qs_partition(array, lo, hi, pivot_type, counter):
     pivot = array[pivot_idx]
     # swap pivot with leftmost element as partition algorithm is adapted
     # to leftmost value as a pivot
-    __swap(array, lo, pivot_idx)
+    swap(array, lo, pivot_idx)
 
     if counter:
         counter(hi - lo)
@@ -45,12 +46,12 @@ def __qs_partition(array, lo, hi, pivot_type, counter):
     for j in range(lo + 1, hi + 1):
 
         if array[j] < pivot:
-            __swap(array, i, j)
+            swap(array, i, j)
             # after each swap operation there is one more element
             # smaller than pivot.
             i += 1
     # i represents number of swaps made and next position of pivot element
-    __swap(array, lo, i - 1)
+    swap(array, lo, i - 1)
     return i - 1
 
 
@@ -75,30 +76,6 @@ def __resolve_median(array, lo, hi):
     return median
 
 
-def __swap(array, i, j):
-    tmp = array[i]
-    array[i] = array[j]
-    array[j] = tmp
-
-
-def __copy(input):
-    res = []
-    for i in input:
-        res.append(i)
-    return res
-
-
-def __is_sorted(array):
-    sorted = True
-    i = 0
-    for j in range(1, len(array)):
-        if array[i] > array[j]:
-            sorted = False
-            break
-        i += 1
-    return sorted
-
-
 def main():
     # given_arr = [1, 3, 0, 9, 4, 8, 5, 6, 2, 7]
     # given_arr = [1, 3, 0, 12, 11, 9, 14, 10, 15, 4, 13, 8, 5, 6, 2, 7]
@@ -109,11 +86,11 @@ def main():
     # print("Given array: ", given_arr)
 
     for pivot_type in PivotType:
-        array = __copy(given_arr)
+        array = copy(given_arr)
         counter = Counter()
         quick_sort(array, pivot_type=pivot_type, counter=counter)
         print("Array is {}, comparisons count: {}".format(
-            __is_sorted(array), counter.total))
+            is_sorted(array), counter.total))
 
 
 if __name__ == '__main__':

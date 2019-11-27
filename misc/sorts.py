@@ -1,4 +1,7 @@
 
+from misc.sort_utils import copy, swap, is_sorted
+
+
 def bubble_sort(array):
     """
     https://en.wikipedia.org/wiki/Bubble_sort#/media/File:Bubble-sort-example-300px.gif
@@ -10,7 +13,7 @@ def bubble_sort(array):
         swapped = False
         for i in range((len(array) - 1) - iterations_count):
             if array[i] > array[i + 1]:
-                __swap(array, i, i + 1)
+                swap(array, i, i + 1)
                 swapped = True
         if swapped is False:
             break
@@ -48,11 +51,15 @@ def selection_sort(array):
                 val_index = j
 
         if val_index != i:
-            __swap(array, i, val_index)
+            swap(array, i, val_index)
     return array
 
 
 def counting_sort(array):
+    """
+    https://en.wikipedia.org/wiki/Counting_sort
+    https://www.geeksforgeeks.org/counting-sort/
+    """
     max_val = array[0]
     for val in array:
         max_val = val if val > max_val else max_val
@@ -64,7 +71,7 @@ def counting_sort(array):
         count[val] += 1
 
     # modify count list such that each value is combined with sum
-    # of previous counts. In this case each value indicates initial
+    # of previous counts. In this case each value includes initial
     # position of value sequence in sorted array.
     for i in range(max_val):
         count[i + 1] += count[i]
@@ -74,7 +81,7 @@ def counting_sort(array):
     i = len(output) - 1
     while i >= 0:
         count_index = array[i]
-        # take positio and decrease by to convert from count to index
+        # take position and decrease by 1 to convert from count to index
         output[count[count_index] - 1] = array[i]
         # decrease count number after number was restored
         count[count_index] -= 1
@@ -144,7 +151,7 @@ def quick_sort(array, lo=0, hi=-1):
 
 
 def __qs_partition_middle(array, lo, hi):
-    # select first array element as a pivot, then iterate from
+    # select middle array element as a pivot, then iterate from
     # beginning and end of array towards to middle and swap elements
     # so smaller are right to pivot and bigger are right to pivot
     pivot_idx = lo + (hi - lo) // 2
@@ -161,41 +168,16 @@ def __qs_partition_middle(array, lo, hi):
         if i >= j:
             break
 
-        __swap(array, i, j)
+        swap(array, i, j)
         i += 1
         j -= 1
 
     return j
 
 
-def __swap(array, i, j):
-    tmp = array[i]
-    array[i] = array[j]
-    array[j] = tmp
-
-
-def __copy(input):
-    res = []
-    for i in input:
-        res.append(i)
-    return res
-
-
-def __is_sorted(array):
-    sorted = True
-    i = 0
-    for j in range(1, len(array)):
-        if array[i] > array[j]:
-            sorted = False
-            break
-        i += 1
-    return sorted
-
-
 def main():
     given_arr = [
-        1, 3, 4, 0, 12, 11, 9, 14, 1, 10, 3,
-        15, 4, 13, 8, 5, 6, 10, 2, 7, 1, 1]
+        1, 3, 0, 12, 11, 9, 14, 1, 10, 3, 15, 4, 13, 8, 5, 6, 10, 2, 7, 1, 1]
 
     print("Given array: ", given_arr)
     sorts = [
@@ -204,9 +186,9 @@ def main():
 
     for sort in sorts:
         print("Sorting array with: ", sort)
-        sorted_arr = globals()[sort](__copy(given_arr))
+        sorted_arr = globals()[sort](copy(given_arr))
+        assert is_sorted(sorted_arr) is True
         print("Sorted array: ", sorted_arr)
-        assert __is_sorted(sorted_arr) is True
 
 
 if __name__ == '__main__':
