@@ -4,7 +4,11 @@ from misc.file_utils import read_input_graph
 from itertools import chain
 from typing import List
 from random import choice
-from os import getenv
+from os import getenv, cpu_count
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import as_completed
+import matplotlib.pyplot as plt
+
 
 class Vertex:
     def __init__(self, value):
@@ -131,18 +135,39 @@ def init_graph(input: List[List[int]]) -> Graph:
     return graph
 
 
+def calculate_task(input_graph):
+    graph = init_graph(input_graph)
+    result = graph.calculate_min_cut()
+    print("Received result of graph min cut: {}".format(result))
+    return result
+
+
 def main():
     input_graph = read_input_graph(
         '{}/{}/'.format(getenv('BASE_DIR'), 'course1/week4'),
         'kargerMinCut.txt')
 
-    attempts = 10
+    num_of_cores = cpu_count()
+    if num_of_cores is None:
+        num_of_cores = 3
+
+    futures = []
+    attempt = 1
+    attempts = 1000
+    with ThreadPoolExecutor(max_workers=num_of_cores) as executor:
+        for n in range(attempts):
+            futures.append(executor.submit(calculate_task, input_graph))
+            print("Submitted calculation task {}".format(attempt))
+            attempt += 1
+
     cuts = []
-    for i in range(attempts):
-        graph = init_graph(input_graph)
-        cut_value = graph.calculate_min_cut()
-        print("Calculation attempt: {}, result: {}".format(i + 1, cut_value))
+    for future in as_completed(futures):
+        cut_value = future.result()
         cuts.append(cut_value)
+
+    plt.hist(cuts, 100, facecolor='green')
+    plt.savefig('{}/{}/{}'.format(getenv('BASE_DIR'), 'course1/week4', 'cut_distribution.png'))
+
     print(cuts)
     print(min(cuts))
 
