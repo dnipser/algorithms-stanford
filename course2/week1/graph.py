@@ -80,6 +80,19 @@ class Graph:
         for v in self.get_vertices():
             v.status = TraversalStatus.NOT_VISITED
 
+    def reverse(self):
+        reversed_graph = Graph()
+
+        for v in self.get_vertices():
+            reversed_graph.add_vertex(Vertex(v.value))
+
+        for edge in self.get_edges():
+            vertex = reversed_graph.get_vertex_by_value(edge[1].value)
+            neighbor = reversed_graph.get_vertex_by_value(edge[0].value)
+            reversed_graph.add_edge(vertex, neighbor)
+
+        return reversed_graph
+
     def __repr__(self):
         res = "Vertices:\n"
         res += ', '.join(str(v) for v in self.get_vertices())

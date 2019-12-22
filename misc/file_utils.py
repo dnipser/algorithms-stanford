@@ -1,5 +1,5 @@
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 
 def read_input_dataset(dir, file_name):
@@ -38,14 +38,35 @@ def read_graph_edges(dir, file_name) -> Dict[int, List[int]]:
                 print("Invalid input line, ", vertices)
                 continue
 
-            out_vertex = vertices[0]
-            if out_vertex not in input_graph.keys():
-                input_graph[out_vertex] = []
+            tail_v = int(vertices[0])
+            if tail_v not in input_graph.keys():
+                input_graph[tail_v] = []
 
-            in_vertex = vertices[1]
-            if in_vertex not in input_graph.keys():
-                input_graph[in_vertex] = []
+            head_v = int(vertices[1])
+            if head_v not in input_graph.keys():
+                input_graph[head_v] = []
 
-            input_graph[out_vertex].append(in_vertex)
+            input_graph[tail_v].append(head_v)
+
+    return input_graph
+
+
+def read_graph_edges_with_weights(dir, file_name) -> Dict[int, List[Tuple[int, int]]]:
+    input_graph = {}
+
+    path = '{}{}'.format(dir, file_name)
+    with open(path) as f:
+        for line in f:
+            vertices = line.split()
+
+            tail_v = int(vertices[0])
+            if tail_v not in input_graph.keys():
+                input_graph[tail_v] = []
+
+            head_vertices = vertices[1:]
+            for vertex_line in head_vertices:
+                h_v_weight = vertex_line.split(',')
+                input_graph[tail_v].append(
+                    (int(h_v_weight[0]), int(h_v_weight[1])))
 
     return input_graph

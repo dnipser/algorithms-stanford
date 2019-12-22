@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from misc.file_utils import read_graph_edges
-from course2.week1.graph import Graph, Vertex, TraversalStatus
+from course2.week1.graph import Graph, TraversalStatus
 from os import getenv
 
 
@@ -21,20 +21,6 @@ def dfs_iterative(vertex, stack):
         if vertex == vertices_to_traverse[-1]:
             removed = vertices_to_traverse.pop()
             stack.append(removed.value)
-
-
-def reverse_graph(graph):
-    reversed_graph = Graph()
-
-    for v in graph.get_vertices():
-        reversed_graph.add_vertex(Vertex(v.value))
-
-    for edge in graph.get_edges():
-        vertex = reversed_graph.get_vertex_by_value(edge[1].value)
-        neighbor = reversed_graph.get_vertex_by_value(edge[0].value)
-        reversed_graph.add_edge(vertex, neighbor)
-
-    return reversed_graph
 
 
 def explore_edges(graph):
@@ -67,6 +53,7 @@ def print_current_time():
 
 def scc_kosaraju(graph, reverse_graph):
     """
+    https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D0%9A%D0%BE%D1%81%D0%B0%D1%80%D0%B0%D0%B9%D1%8E
     https://www.youtube.com/watch?v=5wFyZJ8yH9Q&t=1s
     """
     scc_paths = []
@@ -102,7 +89,7 @@ def main():
     print("Initializing graph")
     print_current_time()
     graph = Graph().init(input_graph)
-    reversed_graph = reverse_graph(graph)
+    reversed_graph = graph.reverse()
     print_current_time()
 
     print("Starting graph analysis")
